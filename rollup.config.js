@@ -18,7 +18,7 @@ export default {
       emitCss: false,
       preprocess: autoPreprocess(),
     }),
-    typescript({ sourceMap: env.env === "DEV" }),
+    typescript({ include: ["**/*.ts"], sourceMap: env.env === "DEV" }),
     resolve({
       browser: true,
       dedupe: ["svelte"],

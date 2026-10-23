@@ -1,3 +1,7 @@
+# Periodic Notes (Maintained)
+
+Personal maintenance fork by GYukai. See [MAINTENANCE.md](MAINTENANCE.md) for installation, compatibility, build and rollback instructions.
+
 # Periodic Notes ⌚
 
 The Periodic Notes plugin expands on the idea of daily notes and introduces weekly and monthly notes.

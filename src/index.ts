@@ -35,13 +35,26 @@ export default class PeriodicNotesPlugin extends Plugin {
   public isInitialLoad: boolean;
 
   private ribbonEl: HTMLElement;
+  private legacyCommandIds = new Set<string>();
 
   async onload(): Promise<void> {
+    // The daily-notes interface and Calendar resolve this legacy registry key.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const manager = (this.app as any).plugins;
+    if (manager.getPlugin("periodic-notes")) {
+      throw new Error("Disable the original Periodic Notes before enabling the maintained version.");
+    }
     this.ribbonEl = null;
 
     this.updateSettings = this.updateSettings.bind(this);
 
     await this.loadSettings();
+    manager.plugins["periodic-notes"] = this;
+    this.register(() => {
+      if (manager.plugins["periodic-notes"] === this) {
+        delete manager.plugins["periodic-notes"];
+      }
+    });
     this.addSettingTab(new PeriodicNotesSettingsTab(this.app, this));
 
     this.app.workspace.onLayoutReady(this.onLayoutReady.bind(this));
@@ -114,16 +127,31 @@ export default class PeriodicNotesPlugin extends Plugin {
         getCommands(periodicity).forEach((command) =>
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (this.app as any).commands.removeCommand(
-            `periodic-notes:${command.id}`
+            `${this.manifest.id}:${command.id}`
           )
         );
+        getCommands(periodicity).forEach((command) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (this.app as any).commands.removeCommand(`periodic-notes:${command.id}`);
+        });
       });
 
     // register enabled commands
     ["daily", "weekly", "monthly", "quarterly", "yearly"]
       .filter((periodicity) => this.settings[periodicity].enabled)
       .forEach((periodicity: IPeriodicity) => {
-        getCommands(periodicity).forEach(this.addCommand.bind(this));
+        getCommands(periodicity).forEach((command) => {
+          this.addCommand(command);
+          const legacyId = `periodic-notes:${command.id}`;
+          // Preserve existing hotkeys, URI commands and Buttons note actions.
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const commands = (this.app as any).commands;
+          commands.addCommand({ ...command, id: legacyId, name: `Periodic Notes: ${command.name}` });
+          if (!this.legacyCommandIds.has(legacyId)) {
+            this.legacyCommandIds.add(legacyId);
+            this.register(() => commands.removeCommand(legacyId));
+          }
+        });
       });
   }
 

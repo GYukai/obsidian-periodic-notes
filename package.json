@@ -1,6 +1,6 @@
 {
-  "name": "obsidian-periodic-notes",
-  "version": "0.0.17",
+  "name": "periodic-notes-maintained",
+  "version": "0.1.0",
   "description": "Create/manage daily, weekly, and monthly notes",
   "author": "liamcain",
   "main": "main.js",
@@ -9,7 +9,8 @@
     "lint": "eslint . --ext .ts",
     "build": "npm run lint && rollup -c",
     "test": "jest --passWithNoTests",
-    "test:watch": "yarn test -- --watch"
+    "test:watch": "yarn test -- --watch",
+    "test:compat": "node tests/compatibility.cjs"
   },
   "dependencies": {
     "@popperjs/core": "2.9.1",
@@ -53,5 +54,8 @@
       "js",
       "ts"
     ]
+  },
+  "overrides": {
+    "obsidian": "0.12.16"
   }
 }
