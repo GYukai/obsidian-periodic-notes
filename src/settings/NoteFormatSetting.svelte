@@ -6,6 +6,7 @@
     DEFAULT_QUARTERLY_NOTE_FORMAT,
     DEFAULT_YEARLY_NOTE_FORMAT,
   } from "obsidian-daily-notes-interface";
+  import { getCurrentPeriodDate } from "../dayStart";
   import { onMount } from "svelte";
   import type { Writable } from "svelte/store";
 
@@ -61,7 +62,7 @@
       >
       <div>
         Your current syntax looks like this: <b class="u-pop"
-          >{window.moment().format(value || defaultFormat)}
+          >{getCurrentPeriodDate(periodicity, window.moment(), $settings.dayStartTime).format(value || defaultFormat)}
         </b>
       </div>
       {#if isTemplateNested}

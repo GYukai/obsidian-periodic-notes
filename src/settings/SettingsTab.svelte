@@ -3,6 +3,7 @@
   import { writable } from "svelte/store";
   import { slide } from "svelte/transition";
 
+  import { normalizeDayStart } from "../dayStart";
   import type { IPeriodicity, ISettings } from "./index";
 
   import GettingStartedBanner from "./GettingStartedBanner.svelte";
@@ -51,6 +52,28 @@
     }}
   />
 {/if}
+<div class="setting-item">
+  <div class="setting-item-info">
+    <div class="setting-item-name">每天开始时间 / Day starts at</div>
+    <div class="setting-item-description">
+      按本地时间，在此时间之前，“今天的日记”归属前一天。默认 04:00；设为 00:00 则从午夜开始。
+      适用于本插件的日记命令、侧栏按钮及菜单；日历中指定日期、周记和月记等不受影响。
+    </div>
+  </div>
+  <div class="setting-item-control">
+    <input
+      type="time"
+      aria-label="每天开始时间 / Day starts at"
+      value={$settingsStore.dayStartTime}
+      on:change={(event) => {
+        const input = event.currentTarget;
+        const value = normalizeDayStart(input.value);
+        input.value = value;
+        $settingsStore.dayStartTime = value;
+      }}
+    />
+  </div>
+</div>
 {#each periodicities as periodicity}
   <div class="setting-item setting-item-heading">
     <div class="setting-item-info">

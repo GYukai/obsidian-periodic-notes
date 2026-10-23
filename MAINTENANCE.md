@@ -19,3 +19,7 @@ Disable the maintained plugin and enable the original. The original installation
 ## Release
 
 Publish only `main.js`, `manifest.json`, and `styles.css` (plus an optional zip). The personal repository is `GYukai/obsidian-periodic-notes`. Add this repository to BRAT and select `latest` for automatic updates. Push a version tag matching `manifest.json` to run the release workflow.
+
+## Day start (0.2.0)
+
+`dayStartTime` defaults to `04:00` for new and existing settings. Before that local wall-clock time, the plugin's current daily note commands (including legacy aliases), ribbon and menus open/create the previous calendar day's note. At the cutoff the current date applies. Set `00:00` for midnight behavior. Invalid values fall back to `04:00`. The settings format preview follows this rule. Explicit dates, previous/next existing-note navigation, weekly/monthly/quarterly/yearly notes and other plugins' own date selection are unchanged; Calendar date clicks still open the selected date. No global clock or third-party plugin is patched. Tests cover the cutoff, custom minutes, calendar boundaries and DST.

@@ -1,7 +1,8 @@
 import type moment from "moment";
 import { addIcon, App, Plugin } from "obsidian";
 
-import { getCommands, openPeriodicNote, periodConfigs } from "./commands";
+import { getCommands, openCurrentPeriodicNote, periodConfigs } from "./commands";
+import { DEFAULT_DAY_START, normalizeDayStart } from "./dayStart";
 import { SETTINGS_UPDATED } from "./events";
 import {
   calendarDayIcon,
@@ -108,7 +109,7 @@ export default class PeriodicNotesPlugin extends Plugin {
         `calendar-${config.unitOfTime}`,
         `Open ${config.relativeUnit}`,
         (event: MouseEvent) =>
-          openPeriodicNote(periodicity, window.moment(), isMetaPressed(event))
+          openCurrentPeriodicNote(periodicity, isMetaPressed(event))
       );
       this.ribbonEl.addEventListener("contextmenu", (ev: MouseEvent) => {
         showFileMenu(this.app, this.settings, {
@@ -165,6 +166,7 @@ export default class PeriodicNotesPlugin extends Plugin {
     this.settings = Object.assign(
       {},
       {
+        dayStartTime: DEFAULT_DAY_START,
         showGettingStartedBanner: true,
         hasMigratedDailyNoteSettings: false,
         hasMigratedWeeklyNoteSettings: false,
@@ -177,6 +179,7 @@ export default class PeriodicNotesPlugin extends Plugin {
       },
       settings || {}
     );
+    this.settings.dayStartTime = normalizeDayStart(this.settings.dayStartTime);
   }
 
   private onSettingsUpdate(): void {
@@ -188,7 +191,7 @@ export default class PeriodicNotesPlugin extends Plugin {
   }
 
   async updateSettings(val: ISettings): Promise<void> {
-    this.settings = val;
+    this.settings = { ...val, dayStartTime: normalizeDayStart(val.dayStartTime) };
     await this.saveData(this.settings);
 
     this.onSettingsUpdate();

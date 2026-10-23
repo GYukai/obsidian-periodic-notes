@@ -1,6 +1,6 @@
 {
   "name": "periodic-notes-maintained",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Create/manage daily, weekly, and monthly notes",
   "author": "liamcain",
   "main": "main.js",
@@ -10,7 +10,7 @@
     "build": "npm run lint && rollup -c",
     "test": "jest --passWithNoTests",
     "test:watch": "yarn test -- --watch",
-    "test:compat": "node tests/compatibility.cjs"
+    "test:compat": "node tests/compatibility.cjs && node tests/day-start.cjs"
   },
   "dependencies": {
     "@popperjs/core": "2.9.1",

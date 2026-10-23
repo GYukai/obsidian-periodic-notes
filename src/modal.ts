@@ -1,6 +1,6 @@
 import { App, Menu, Modal, Point } from "obsidian";
 
-import { openPeriodicNote, periodConfigs } from "./commands";
+import { openCurrentPeriodicNote, getCurrentNoteDate, periodConfigs } from "./commands";
 import type { IPeriodicity, ISettings } from "./settings";
 
 export function showFileMenu(
@@ -19,7 +19,7 @@ export function showFileMenu(
           .setTitle(`Open ${config.relativeUnit}`)
           .setIcon(`calendar-${config.unitOfTime}`)
           .onClick(() => {
-            openPeriodicNote(periodicity, window.moment(), false);
+            openCurrentPeriodicNote(periodicity, false);
           })
       );
     });
@@ -39,7 +39,7 @@ export class PeriodicNoteCreateModal extends Modal {
         const config = periodConfigs[periodicity];
 
         const noteExists = config.getNote(
-          window.moment(),
+          getCurrentNoteDate(periodicity),
           config.getAllNotes()
         );
 
@@ -73,7 +73,7 @@ export class PeriodicNoteCreateModal extends Modal {
             }
 
             button.addEventListener("click", () => {
-              openPeriodicNote(periodicity, window.moment(), false);
+              openCurrentPeriodicNote(periodicity, false);
               this.close();
             });
           });

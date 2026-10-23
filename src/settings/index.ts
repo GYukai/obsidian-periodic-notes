@@ -17,6 +17,7 @@ interface IPerioditySettings extends IPeriodicNoteSettings {
 }
 
 export interface ISettings {
+  dayStartTime: string;
   showGettingStartedBanner: boolean;
   hasMigratedDailyNoteSettings: boolean;
   hasMigratedWeeklyNoteSettings: boolean;

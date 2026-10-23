@@ -20,6 +20,7 @@ import {
 } from "obsidian-daily-notes-interface";
 
 import type { IPeriodicity } from "src/settings";
+import { getCurrentPeriodDate } from "./dayStart";
 import { orderedValues } from "src/utils";
 
 interface IPeriodConfig {
@@ -67,6 +68,19 @@ export const periodConfigs: Record<IPeriodicity, IPeriodConfig> = {
     getAllNotes: getAllYearlyNotes,
   },
 };
+
+export function getCurrentNoteDate(periodicity: IPeriodicity): Moment {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const plugin = (window.app as any).plugins.getPlugin("periodic-notes-maintained");
+  return getCurrentPeriodDate(periodicity, window.moment(), plugin?.settings?.dayStartTime);
+}
+
+export function openCurrentPeriodicNote(
+  periodicity: IPeriodicity,
+  inNewSplit: boolean
+): Promise<void> {
+  return openPeriodicNote(periodicity, getCurrentNoteDate(periodicity), inNewSplit);
+}
 
 export async function openPeriodicNote(
   periodicity: IPeriodicity,
@@ -150,7 +164,7 @@ export function getCommands(periodicity: IPeriodicity): Command[] {
     {
       id: `open-${periodicity}-note`,
       name: `Open ${periodicity} note`,
-      callback: () => openPeriodicNote(periodicity, window.moment(), false),
+      callback: () => openCurrentPeriodicNote(periodicity, false),
     },
 
     {

@@ -24,6 +24,7 @@ sandbox.window.app = app;
   const plugin = new Maintained(app);
   await plugin.onload();
   assert.equal(app.plugins.getPlugin('periodic-notes'), plugin);
+  assert.equal(plugin.settings.dayStartTime, '04:00');
   assert.equal(app.plugins.getPlugin('periodic-notes').settings.daily.folder, 'Journal');
   app.workspace.ready();
   const legacy = [...commands.keys()].filter(id => id.startsWith('periodic-notes:'));
