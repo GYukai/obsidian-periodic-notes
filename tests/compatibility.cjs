@@ -7,7 +7,7 @@ class Plugin {
   async loadData() { return {daily: {enabled: true, format: 'YYYY/MM-DD', folder: 'Journal'}, weekly: {enabled: true}}; }
   addSettingTab() {}
   addRibbonIcon() { return {detach() {}, addEventListener() {}}; }
-  addCommand(command) { this.app.commands.addCommand({...command, id: `${this.manifest.id}:${command.id}`}); }
+  addCommand(command) { command.id = `${this.manifest.id}:${command.id}`; command.name = `Periodic Notes (Maintained): ${command.name}`; this.app.commands.addCommand(command); }
 }
 const obsidian = new Proxy({Plugin, addIcon() {}}, {get(target, name) { return target[name] || class {}; }});
 const sandbox = {module: {exports: {}}, require(name) { return name === 'obsidian' ? obsidian : require(name); }, console, window: {}};
@@ -29,7 +29,7 @@ sandbox.window.app = app;
   app.workspace.ready();
   const legacy = [...commands.keys()].filter(id => id.startsWith('periodic-notes:'));
   assert.ok(legacy.length > 0);
-  for (const id of legacy) assert.ok(commands.has(id.replace('periodic-notes:', 'periodic-notes-maintained:')));
+  for (const id of legacy) { assert.ok(commands.has(id.replace('periodic-notes:', 'periodic-notes-maintained:'))); assert.ok(!id.includes('periodic-notes-maintained')); assert.ok(!commands.get(id).name.includes('(Maintained)')); }
   const cleanupCount = plugin.cleanups.length;
   plugin.configureCommands();
   assert.equal(plugin.cleanups.length, cleanupCount);

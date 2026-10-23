@@ -142,7 +142,8 @@ export default class PeriodicNotesPlugin extends Plugin {
       .filter((periodicity) => this.settings[periodicity].enabled)
       .forEach((periodicity: IPeriodicity) => {
         getCommands(periodicity).forEach((command) => {
-          this.addCommand(command);
+          // Obsidian prefixes command.id/name in place; preserve the legacy copy.
+          this.addCommand({ ...command });
           const legacyId = `periodic-notes:${command.id}`;
           // Preserve existing hotkeys, URI commands and Buttons note actions.
           // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,6 +1,6 @@
 {
   "name": "periodic-notes-maintained",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Create/manage daily, weekly, and monthly notes",
   "author": "liamcain",
   "main": "main.js",
